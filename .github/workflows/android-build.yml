@@ -19,7 +19,9 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y unzip
 
       - name: Unzip Android project
-        run: unzip UsbLockScreenProject.zip -d project
+        run: |
+          unzip UsbLockScreenProject.zip
+          ls
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -28,14 +30,14 @@ jobs:
           java-version: '17'
 
       - name: Grant execute permission
-        run: chmod +x project/gradlew
+        run: chmod +x UsbLockScreenProject/gradlew
 
       - name: Build debug APK
-        working-directory: project
+        working-directory: UsbLockScreenProject
         run: ./gradlew assembleDebug
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
-          path: project/app/build/outputs/apk/debug/*.apk
+          path: UsbLockScreenProject/app/build/outputs/apk/debug/*.apk
