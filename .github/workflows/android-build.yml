@@ -19,8 +19,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y unzip wget
 
       - name: Unzip Android project
-        # This will put settings.gradle, app/, etc directly in the workspace
-        run: unzip UsbLockScreenProject.zip
+        run: unzip UsbLockScreenProject_v2.zip
 
       - name: Show files (debug)
         run: ls -R
@@ -30,28 +29,6 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-
-      - name: Force Kotlin & Java to same target
-        run: |
-          # Extra gradle.properties tweaks (not strictly required now, but safe)
-          echo "android.suppressUnsupportedCompileSdk=34" >> gradle.properties
-          cat gradle.properties
-
-          # Append Kotlin jvmTarget fix into app/build.gradle
-          cat << 'EOF' >> app/build.gradle
-
-// --- Added by GitHub Actions to keep Kotlin & Java JVM target in sync ---
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-    kotlinOptions {
-        // Match Java 1.8 so Gradle stops complaining
-        jvmTarget = "1.8"
-    }
-}
-// --- End GitHub Actions patch ---
-EOF
-
-          echo "===== app/build.gradle tail ====="
-          tail -n 40 app/build.gradle
 
       - name: Download Gradle 8.0
         run: |
