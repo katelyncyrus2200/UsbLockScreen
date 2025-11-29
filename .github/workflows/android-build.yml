@@ -31,12 +31,27 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Force Kotlin JVM target to 1.8
-        # Make sure Kotlin and Java use the same target (1.8)
+      - name: Force Kotlin & Java to same target
         run: |
-          echo "kotlin.jvm.target=1.8" >> gradle.properties
+          # Extra gradle.properties tweaks (not strictly required now, but safe)
           echo "android.suppressUnsupportedCompileSdk=34" >> gradle.properties
           cat gradle.properties
+
+          # Append Kotlin jvmTarget fix into app/build.gradle
+          cat << 'EOF' >> app/build.gradle
+
+// --- Added by GitHub Actions to keep Kotlin & Java JVM target in sync ---
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        // Match Java 1.8 so Gradle stops complaining
+        jvmTarget = "1.8"
+    }
+}
+// --- End GitHub Actions patch ---
+EOF
+
+          echo "===== app/build.gradle tail ====="
+          tail -n 40 app/build.gradle
 
       - name: Download Gradle 8.0
         run: |
