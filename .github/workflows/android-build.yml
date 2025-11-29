@@ -1,4 +1,4 @@
-name: Android APK Build (From ZIP)
+name: USB Lock Text APK
 
 on:
   workflow_dispatch:
@@ -19,7 +19,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y unzip wget
 
       - name: Unzip Android project
-        run: unzip UsbLockScreenProject_v3.zip
+        run: unzip UsbLockTextProject.zip
 
       - name: Show files (debug)
         run: ls -R
@@ -41,5 +41,5 @@ jobs:
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug-apk
+          name: usblocktext-debug-apk
           path: app/build/outputs/apk/debug/*.apk
